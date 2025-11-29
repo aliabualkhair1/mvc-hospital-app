@@ -1,0 +1,124 @@
+﻿    @model Hospital_Project.Entities.Appointments
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>طباعة بيانات الحجز</title>
+    @Html.Raw(@"
+    <style>
+    @page {
+    size: auto;
+    margin: 0;
+    }
+
+    html, body {
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    font-family: 'Segoe UI', Tahoma;
+    background-color: white;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    }
+
+    h2 {
+    margin: 20px 0 10px;
+    font-size: 20px;
+    }
+
+    table {
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: fit-content;
+    }
+
+    td, th {
+    border: 1px solid #333;
+    padding: 8px 12px;
+    text-align: right;
+    font-size: 14px;
+    }
+
+    .print-btn {
+    margin: 20px auto;
+    padding: 10px 25px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+    }
+
+    .print-btn:hover {
+    background-color: #0056b3;
+    }
+
+    @media print {
+    .print-btn {
+    display: none;
+    }
+
+    html, body {
+    height: auto;
+    display: block;
+    align-items: unset;
+    justify-content: unset;
+    }
+    }
+    </style>
+    ")
+</head>
+<body>
+
+    <table>
+        <tr><th>الحجز رقم</th><td>@Model.Id</td></tr>
+        <tr><th>رقم هاتف المريض</th><td>@Model.Patient?.Phone</td></tr>
+        <tr><th>اسم المريض</th><td>@Model.Patient?.Name</td></tr>
+        <tr><th>اسم الطبيب</th><td>@Model.Doctor?.Name - @Model.Doctor?.Department.Name - @Model.Doctor?.DoctorRank</td></tr>
+        <tr>
+            <th>ميعاد التواجد</th>
+            <td>
+                @Model.DoctorAvailableTime?.AvailableTimes
+                من @Model.DoctorAvailableTime?.StartTime.ToString("hh:mm tt", new System.Globalization.CultureInfo("ar-EG"))
+                إلى @Model.DoctorAvailableTime?.EndTime.ToString("hh:mm tt", new System.Globalization.CultureInfo("ar-EG"))
+            </td>
+        </tr>
+        <tr><th>سعر الكشف</th><td>@Model.Doctor?.BookingSalary</td></tr>
+        <tr><th>معرف الموظف</th><td>@Model.Employee?.Id</td></tr>
+        <tr>
+            <th>اسم الموظف</th>
+            <td>
+                @if (Model.Employee != null && !string.IsNullOrWhiteSpace(Model.Employee.Name))
+                {
+                    @Model.Employee.Name
+                }
+                else
+                {
+                    <span>المريض من قام بالحجز</span>
+                }
+            </td>
+        </tr>
+        <tr><th>تاريخ الحجز</th><td>@Model.DateOfBooking.ToString("dd-MM-yyyy hh:mm:ss dddd", new System.Globalization.CultureInfo("ar-EG"))</td></tr>
+        <tr><th>تاريخ الكشف</th><td>@Model.DoctorDate.ToDateTime(TimeOnly.MinValue).ToString("dd-MM-yyyy dddd", new System.Globalization.CultureInfo("ar-EG"))</td></tr>
+        <tr><th>رقم الكشف</th><td>@Model.NumberOfBooking</td></tr>
+        <tr><th>تاريخ الاستشارة</th><td>@Model.ConsultationDate?.ToDateTime(TimeOnly.MinValue).ToString("dd-MM-yyyy dddd", new System.Globalization.CultureInfo("ar-EG"))</td></tr>
+        <tr><th>رقم الاستشارة</th><td>@Model.NumberOfConsultation</td></tr>
+        <tr><th>نهاية فترة الاستشارة</th><td>@Model.EndOfConsultationDate.ToDateTime(TimeOnly.MinValue).ToString("dd-MM-yyyy dddd", new System.Globalization.CultureInfo("ar-EG"))</td></tr>
+    </table>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <button class="print-btn" onclick="window.print()">🖨️ طباعة</button>
+    </div>
+</body>
+</html>
+

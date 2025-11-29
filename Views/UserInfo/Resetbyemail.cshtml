@@ -1,0 +1,30 @@
+﻿@model Hospital_Project.Entities.UserDTOs.EmailForForgetPassword
+
+@{
+    ViewBag.Title = "تغيير كلمة المرور";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<h3 class="text-center mb-4">تغيير كلمة المرور</h3>
+
+@using (Html.BeginForm("Resetbyemail", "UserInfo", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Email, "البريد الإلكتروني")
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger text-center">@ViewBag.Error</div>
+    }
+
+    <button type="submit" class="btn btn-primary w-100">التالي</button>
+
+    <div class="text-center mt-3">
+        <a href="@Url.Action("SignIN", "UserInfo")">العودة لتسجيل الدخول</a>
+    </div>
+}

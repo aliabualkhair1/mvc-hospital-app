@@ -1,0 +1,168 @@
+﻿@using Hospital_Project.Entities
+@model Hospital_Project.Entities.DTOs.AppointmentsDto
+@{
+    ViewData["Title"] = "تعديل الحجز";
+
+    var doctors = ViewBag.Doctors as List<Doctors>;
+    var patients = ViewBag.Patients as List<Patients>;
+    var employees = ViewBag.Employees as List<Employees>;
+    var availableTimes = ViewBag.AvailableTimes as List<DoctorsTimeTable>;
+    var selectedDoctor = doctors.FirstOrDefault(d => d.Id == Model.DoctorId);
+    var selectedPatient = patients.FirstOrDefault(p => p.Id == Model.PatientId);
+    var culture = new System.Globalization.CultureInfo("ar-EG");
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    input[disabled], input.form-control {
+        background-color: #1f1f1f;
+        color: #fff;
+        border: 1px solid #444;
+    }
+    select.form-control,
+    .select2-container--default .select2-selection--single {
+        background-color: #1f1f1f !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+        height: calc(2.25rem + 2px);
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #fff !important;
+            background-color: #1f1f1f !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 100%;
+        }
+
+    .select2-dropdown {
+        background-color: #1f1f1f !important;
+        color: #fff !important;
+    }
+
+    .select2-results__option {
+        background-color: #1f1f1f !important;
+        color: #fff !important;
+    }
+
+
+    .select2-results__option--highlighted {
+        background-color: #444 !important;
+    }
+</style>
+
+<h2  class="text-center">@ViewData["Title"]</h2>
+
+<form asp-action="UpdateAppointment" method="post" class="p-4 border rounded shadow-sm">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group mb-3">
+        <label class="form-label">الطبيب</label>
+        <input type="text" class="form-control" value="@($"{selectedDoctor?.Name} - {selectedDoctor?.DoctorRank}")" readonly />
+        <input type="hidden" asp-for="DoctorId" />
+    </div> 
+    <div class="form-group mb-3">
+        <label class="form-label">التخصص</label>
+        <input type="text" class="form-control" value="@($"{selectedDoctor?.Department.Name}")" readonly />
+        <input type="hidden" asp-for="DoctorId" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">المريض</label>
+        <input type="text" class="form-control" value="@($"{selectedPatient?.Name} - {selectedPatient?.Phone}")" readonly />
+        <input type="hidden" asp-for="PatientId" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorAvailableTimeId" class="form-label">المواعيد المتاحة</label>
+        <select asp-for="DoctorAvailableTimeId" class="form-control select2" id="DoctorAvailableTimeId">
+            <option value="">-- اختر الموعد --</option>
+            @foreach (var time in availableTimes.Where(t => t.DoctorId == Model.DoctorId))
+            {
+                var text = $"{time.AvailableTimes} من {time.StartTime.ToString("hh:mm tt", culture)} إلى {time.EndTime.ToString("hh:mm tt", culture)}";
+                if (time.Id == Model.DoctorAvailableTimeId)
+                {
+                    <option value="@time.Id" selected>@text</option>
+                }
+                else
+                {
+                    <option value="@time.Id">@text</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="DoctorAvailableTimeId" class="text-danger"></span>
+    </div>
+
+@if(User.IsInRole("Employee")){
+        <div class="form-group mb-3">
+            <label asp-for="EmployeeId" class="form-label">الموظف</label>
+            <select asp-for="EmployeeId" class="form-control select2" id="EmployeeId">
+                <option value="">-- اختر الموظف --</option>
+                @foreach (var employee in employees)
+                {
+                    if (employee.Id == Model.EmployeeId)
+                    {
+                        <option value="@employee.Id" selected>@employee.Name - @employee.Id</option>
+                    }
+                    else
+                    {
+                        <option value="@employee.Id">@employee.Name - @employee.Id</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+}
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorDate" class="form-label">تاريخ الكشف</label>
+        <input asp-for="DoctorDate" type="date" class="form-control" readonly />
+        <span asp-validation-for="DoctorDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorDate" class="form-label">تاريخ الإستشارة</label>
+
+        <input asp-for="ConsultationDate"
+               type="date"
+               class="form-control"
+               min="@DateTime.Today.ToString("yyyy-MM-dd")"
+               readonly="@(Model.ConsultationDate != null ? "readonly" : null)" />
+
+    </div>
+
+
+
+    <div class="form-group mb-3">
+        <label asp-for="EndOfConsultationDate" class="form-label">نهاية فترة الاستشارة</label>
+        <input asp-for="EndOfConsultationDate" type="date" class="form-control" readonly />
+        <span asp-validation-for="EndOfConsultationDate" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+    <a asp-action="GetAppointments" class="btn btn-secondary">إلغاء</a>
+</form>
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                width: '100%',
+                placeholder: "ابحث...",
+                // allowClear: true,
+                language: {
+                    noResults: function () {
+                        return "لا توجد نتائج";
+                    }
+                }
+            });
+        });
+    </script>
+}

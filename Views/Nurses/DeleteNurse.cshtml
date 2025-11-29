@@ -1,0 +1,60 @@
+﻿@using Hospital_Project.Entities
+@model Hospital_Project.Entities.DTOs.NursesDto
+
+@{
+    ViewBag.Title = "حذف الممرض";
+    var dept = ViewBag.Department as Department;
+    var doctors = ViewBag.Doctors as List<Doctors>;
+}
+
+<h2 class="mb-4 text-center text-danger"> حذف الممرض</h2>
+
+<form asp-action="DeleteNurse" method="post" class="w-75 mx-auto">
+    <input type="hidden" asp-for="Id" />
+
+    <dl class="row">
+        <dt class="col-sm-3">الاسم</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">العمر</dt>
+        <dd class="col-sm-9">@Model.Age</dd>
+
+        <dt class="col-sm-3">الجنس</dt>
+        <dd class="col-sm-9">@Model.Gender</dd>
+
+        <dt class="col-sm-3">الهاتف</dt>
+        <dd class="col-sm-9">@Model.Phone</dd>
+
+        <dt class="col-sm-3">الراتب</dt>
+        <dd class="col-sm-9">@Model.Salary</dd>
+
+        <dt class="col-sm-3">وقت البدء</dt>
+        <dd class="col-sm-9">@Model.StartTime.ToString("hh:mm tt")</dd>
+
+        <dt class="col-sm-3">وقت الانتهاء</dt>
+        <dd class="col-sm-9">@Model.EndTime.ToString("hh:mm tt")</dd>
+
+        <dt class="col-sm-3">القسم</dt>
+        <dd class="col-sm-9">@dept?.Name</dd>
+
+        <dt class="col-sm-3">الأطباء المرتبطين</dt>
+        <dd class="col-sm-9">
+            @if (doctors != null && doctors.Any())
+            {
+                foreach (var doctor in doctors)
+                {
+                    <span class="badge bg-info text-dark me-1">@doctor.Name</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">لا يوجد</span>
+            }
+        </dd>
+    </dl>
+
+    <p class="text-danger fw-bold">هل أنت متأكد أنك تريد حذف هذا الممرض؟</p>
+
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a asp-action="ShowNurses" class="btn btn-secondary">إلغاء</a>
+</form>

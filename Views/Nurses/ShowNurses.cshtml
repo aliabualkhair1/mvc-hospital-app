@@ -1,0 +1,102 @@
+﻿ @model List<Hospital_Project.Entities.Nurses>
+@{
+    ViewBag.Title = "عرض الممرضين";
+}
+<h2 class="text-primary mb-4">قائمة الممرضين</h2>
+@if (TempData["Success"] != null)
+{
+    <div id="successMessage"
+         class="alert alert-success text-center position-fixed start-50 translate-middle-x"
+         style="top: 20px; z-index: 9999; font-size: 18px; min-width: 300px;">
+        @TempData["Success"]
+    </div>
+}
+
+<div class="mb-2" style="width: 350px;">
+    <a class="btn btn-success w-100" asp-action="AddNurse">إضافة ممرض جديد</a>
+</div>
+
+<form method="get" asp-action="ShowNurses" asp-controller="Nurses" class="d-flex flex-column gap-2" style="width: 350px;">
+    <input placeholder="بحث بالإسم" name="searchengine" class="form-control" />
+    <input type="submit" value="بحث" class="btn btn-success" />
+</form>
+
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light text-center fs-4 fw-bold text-dark">
+            لا يوجد ممرض حتى الآن
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+        <table class="table table-hover shadow rounded" style="min-width:3100px;">
+            <thead class="table-dark">
+                    <tr>
+                        <th>المعرف</th>
+                        <th>الاسم</th>
+                        <th>العمر</th>
+                        <th>الجنس</th>
+                        <th>الهاتف</th>
+                        <th>الراتب</th>
+                        <th>وقت البدء</th>
+                        <th>وقت الانتهاء</th>
+                        <th>القسم</th>
+                        <th>الأطباء المرتبطين</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var nurse in Model)
+                    {
+                        <tr>
+                            <td>@nurse.Id</td>
+                            <td>@nurse.Name</td>
+                            <td>@nurse.Age</td>
+                            <td>@nurse.Gender</td>
+                            <td>@nurse.Phone</td>
+                            <td>@nurse.Salary</td>
+                            <td>@nurse.StartTime.ToString("hh:mm tt")</td>
+                            <td>@nurse.EndTime.ToString("hh:mm tt")</td>
+                            <td>@nurse.Department?.Name</td>
+                            <td>
+                                @if (nurse.Doctors != null && nurse.Doctors.Any())
+                                {
+                                    foreach (var docNurse in nurse.Doctors)
+                                    {
+                                        <span class="badge bg-info text-dark mb-1">@docNurse.Doctor?.Name</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">لا يوجد</span>
+                                }
+                            </td>
+                            <td class="text-nowrap">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="@Url.Action("UpdateNurse", "Nurses", new { id = nurse.Id })" class="btn btn-warning btn-sm">تعديل</a>
+                                    <a href="@Url.Action("DeleteNurse", "Nurses", new { id = nurse.Id })" class="btn btn-danger btn-sm">حذف</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+@section scripts {
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById("successMessage");
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease-out";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                    alert.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+}

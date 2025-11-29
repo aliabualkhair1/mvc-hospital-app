@@ -1,0 +1,33 @@
+﻿@model Hospital_Project.Entities.DTOs.ComplaintsAndSuggestionsDto
+
+@{
+    ViewData["Title"] = "حذف الشكوى أو الاقتراح  ";
+}
+
+<div class="container mt-5">
+    <h2 class="text-danger mb-4">هل أنت متأكد أنك تريد حذف هذه الشكوى أو الاقتراح؟</h2>
+
+    <form asp-action="DeleteComplaintsAndSuggestions" method="post">
+        <div class="mb-3">
+            <input asp-for="Id" class="form-control" type="hidden" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">الاسم</label>
+            <input asp-for="Name" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">رقم الهاتف</label>
+            <input asp-for="Phone" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">الشكوى أو الاقتراح</label>
+            <textarea asp-for="ProblemandSuggestion" style="resize:none;height:30vh; overflow-y:hidden" class="form-control" rows="4" readonly></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-danger">حذف</button>
+        <a asp-action="GetAllComplaintsAndSuggestions" class="btn btn-secondary ms-2">إلغاء</a>
+    </form>
+</div>

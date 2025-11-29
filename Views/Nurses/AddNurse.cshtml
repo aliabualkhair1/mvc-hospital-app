@@ -1,0 +1,163 @@
+﻿@model Hospital_Project.Entities.DTOs.NursesDto
+
+@{
+    ViewBag.Title = "إضافة ممرض جديد";
+}
+
+<style>
+    input.form-control,
+    select.form-control,
+    textarea.form-control,
+    .select2-container--default .select2-selection--single,
+    .select2-container--default .select2-selection--multiple,
+    .select2-container--default .select2-selection--multiple .select2-selection__choice,
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #000 !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered,
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            color: #fff !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #222 !important;
+            border: 1px solid #555 !important;
+            color: #fff !important;
+        }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #333 !important;
+        color: #fff !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: #ccc !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #fff transparent transparent transparent !important;
+    }
+</style>
+
+<form asp-action="AddNurse" method="post" class="w-75 mx-auto">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Name" class="form-label">الاسم</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Age" class="form-label">العمر</label>
+            <input asp-for="Age" class="form-control" />
+            <span asp-validation-for="Age" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Phone" class="form-label">الهاتف</label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Gender" class="form-label">النوع</label>
+            <select asp-for="Gender" class="form-control">
+                <option value="">--اختر--</option>
+                <option value="ذكر">ذكر</option>
+                <option value="أنثى">أنثى</option>
+            </select>
+            <span asp-validation-for="Gender" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="StartTime" class="form-label">وقت البدء</label>
+            <input asp-for="StartTime" type="time" class="form-control" />
+            <span asp-validation-for="StartTime" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="EndTime" class="form-label">وقت الانتهاء</label>
+            <input asp-for="EndTime" type="time" class="form-control" />
+            <span asp-validation-for="EndTime" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <label asp-for="Salary" class="form-label">الراتب</label>
+            <input asp-for="Salary" class="form-control" />
+            <span asp-validation-for="Salary" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <label asp-for="Departmentid" class="form-label">القسم</label>
+        <select id="Departmentid" asp-for="Departmentid" class="form-control select2" asp-items="ViewBag.Departments">
+            <option value="">--اختر القسم--</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">الأطباء</label>
+        <select id="DoctorsSelect" name="selectedDoctorIds" class="form-control select2" multiple></select>
+    </div>
+
+    <div style="margin-top:10px" class="text-left">
+        <button type="submit" class="btn btn-success">إضافة الممرض</button>
+        <a asp-action="ShowNurses" class="btn btn-secondary">رجوع</a>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "اختر من القائمة",
+                width: '100%'
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "اختر من القائمة",
+                width: '100%'
+            });
+
+            $('#Departmentid').on('change', function () {
+                const departmentId = $(this).val();
+
+                if (departmentId) {
+                    $.ajax({
+                       url: '/Nurses/GetDoctorsByDepartment',
+                        type: 'GET',
+                        data: { departmentId: departmentId },
+                        success: function (data) {
+                            const $doctorSelect = $('#DoctorsSelect');
+                            $doctorSelect.empty(); // تفريغ الاختيارات السابقة
+
+                            $.each(data, function (i, doctor) {
+                                $doctorSelect.append(
+                                    $('<option></option>').val(doctor.id).text(doctor.name)
+                                );
+                            });
+
+                            $doctorSelect.trigger('change'); // إعادة تهيئة الـ select2
+                        }
+                    });
+                } else {
+                    $('#DoctorsSelect').empty().trigger('change');
+                }
+            });
+        });
+    </script>
+
+}

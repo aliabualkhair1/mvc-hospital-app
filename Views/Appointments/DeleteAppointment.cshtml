@@ -1,0 +1,93 @@
+﻿@using Hospital_Project.Entities
+@model Hospital_Project.Entities.DTOs.AppointmentsDto
+
+@{
+    ViewData["Title"] = "حذف ميعاد الحجز  ";
+    var patients=ViewBag.Patients as Patients;
+   var doctors= ViewBag.Doctors as Doctors;
+   var employees= ViewBag.Employees as Employees;
+}
+<h2 class="text-danger text-center mb-4">هل أنت متأكد أنك تريد حذف هذا الموعد؟</h2>
+
+<style>
+    input[disabled], input.form-control {
+        background-color: #1f1f1f;
+        color: #fff;
+        border: 1px solid #444;
+    }
+
+    select.form-control,
+    .select2-container--default .select2-selection--single {
+        background-color: #1f1f1f !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+        height: calc(2.25rem + 2px);
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #fff !important;
+            background-color: #1f1f1f !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 100%;
+        }
+
+    .select2-dropdown {
+        background-color: #1f1f1f !important;
+        color: #fff !important;
+    }
+
+    .select2-results__option {
+        background-color: #1f1f1f !important;
+        color: #fff !important;
+    }
+
+
+    .select2-results__option--highlighted {
+        background-color: #444 !important;
+    }
+</style>
+<form asp-action="DeleteAppointment" method="post" class="p-4 border rounded shadow-sm">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group mb-3">
+        <label value="@patients.Name" class="form-label"> إسم المريض  </label>
+        <input value="@patients.Name" class="form-control" readonly />
+    </div>
+    <div class="form-group mb-3">
+        <label value="@patients.Phone" class="form-label"> رقم الهاتف   </label>
+        <input value="@patients.Phone" class="form-control" readonly />
+    </div>
+
+    <div class="form-group mb-3">
+        <label value="@doctors.Name" class="form-label"> إسم الطبيب</label>
+        <input value="@doctors.Name" class="form-control" readonly />
+    </div>
+    <div class="form-group mb-3">
+        <label value="@doctors.Department.Name" class="form-label">  التخصص  </label>
+        <input value="@doctors.Department.Name" class="form-control" readonly />
+    </div>
+    <div class="form-group mb-3">
+        <label value="@employees?.Id" class="form-label">  معرف الموظف</label>
+        <input value="@employees?.Id" class="form-control" readonly />
+    </div>
+        <div class="form-group mb-3">
+        <label value="@employees?.Name" class="form-label"> إسم الموظف</label>
+        <input value="@employees?.Name" class="form-control" readonly />
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="DoctorDate" class="form-label"> تاريخ الكشف </label>
+        <input value="@Model.DoctorDate.ToString("dd-MM-yyyy dddd",new System.Globalization.CultureInfo("ar-EG"))" class="form-control" readonly />
+    </div>    <div class="form-group mb-3">
+        <label asp-for="EndOfConsultationDate" class="form-label"> نهاية فترة الإستشارة </label>
+        <input value="@Model.EndOfConsultationDate.ToString("dd-MM-yyyy dddd",new System.Globalization.CultureInfo("ar-EG"))" class="form-control" readonly />
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="ConsultationDate" class="form-label"> تاريخ الإستشارة </label>
+        <input value="@Model.ConsultationDate?.ToString("dd-MM-yyyy dddd" ,new System.Globalization.CultureInfo("ar-EG"))" class="form-control" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a asp-action="GetAppointments" class="btn btn-secondary ms-2">إلغاء</a>
+</form>

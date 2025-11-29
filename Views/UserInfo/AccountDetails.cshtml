@@ -1,0 +1,25 @@
+﻿@using Hospital_Project.Entities.DTOs
+@using Hospital_Project.Entities.User
+@model AccountDetailsViewModel
+
+@{
+    ViewData["Title"] = "بيانات الحساب";
+}
+
+<h2 class="text-primary mb-4">بيانات الحساب</h2>
+
+<div class="card p-3 mb-3">
+    <p><strong> الإسم الأول:</strong> @Model.User.FirstName</p>
+    <p><strong>الإسم الأخير :</strong> @Model.User.LastName</p>
+    <p><strong> البريد الإلكترونى :</strong>@Model.User.Email</></p>
+    <p><strong> رقم الهاتف:</strong> @Model.User.PhoneNumber</p>
+    <p><strong> النوع:</strong> @Model.User.Gender</p>
+    <p><strong> الدور:</strong> @Model.Roles.FirstOrDefault()</p>
+</div>
+
+<div class="d-flex gap-2">
+    <form asp-action="DeleteAccountConfirmed" method="post" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف الحساب؟');">
+        <button type="submit" class="btn btn-danger">حذف الحساب</button>
+    </form>
+
+</div>

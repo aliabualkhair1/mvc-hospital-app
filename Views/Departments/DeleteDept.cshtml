@@ -1,0 +1,22 @@
+﻿@model Hospital_Project.Entities.DTOs.DepartmentDto
+@{
+    ViewBag.Title = "حذف القسم";
+}
+
+<h2 class="mb-4 text-center text-danger"> حذف القسم</h2>
+
+   <div class="text-center">
+   <h4  class="text-danger fw-bold">هل أنت متأكد أنك تريد حذف هذا القسم؟</h4>
+   </div>
+<form asp-action="DeleteDept" method="post" class="w-50 mx-auto">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label">إسم القسم</label>
+        <input asp-for="Name" class="form-control" readonly />
+    </div>
+
+
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a asp-action="ShowDepartments" class="btn btn-secondary">إلغاء</a>
+</form>

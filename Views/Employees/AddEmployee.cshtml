@@ -1,0 +1,70 @@
+﻿@model Hospital_Project.Entities.DTOs.EmployeesDto
+
+@{
+    ViewData["Title"] = "إضافة موظف جديد  ";
+}
+
+<h2 class="text-center mb-4">إضافة موظف جديد</h2>
+
+<form asp-action="AddEmployee" method="post" class="p-4 border rounded shadow-sm">
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label">الاسم</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Age" class="form-label">العمر</label>
+        <input asp-for="Age" class="form-control" type="number" />
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Gender" class="form-label">النوع</label>
+        <select asp-for="Gender" class="form-control">
+            <option value="">-- اختر النوع --</option>
+            <option value="ذكر">ذكر</option>
+            <option value="أنثى">أنثى</option>
+        </select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Phone" class="form-label">رقم الهاتف</label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <div class="form-group mb-3">
+            <label asp-for="NatureOfWork" class="form-label">طبيعة العمل</label>
+            <select asp-for="NatureOfWork" class="form-control select2" asp-items="@(new SelectList(ViewBag.JobList, "Value", "Text"))">
+                <option value="">اختر طبيعة العمل</option>
+            </select>
+            <span asp-validation-for="NatureOfWork" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="Salary" class="form-label">الراتب</label>
+        <input asp-for="Salary" class="form-control" type="number" />
+        <span asp-validation-for="Salary" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">إضافة الموظف</button>
+    <a asp-action="ShowEmployees" class="btn btn-secondary">إلغاء</a>
+</form>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "ابحث عن موظف...",
+            });
+        });
+    </script>
+
+}

@@ -1,0 +1,188 @@
+﻿@using Hospital_Project.Entities
+@model Hospital_Project.Entities.DTOs.AppointmentsDto
+
+@{
+    ViewData["Title"] = "إضافة حجز";
+    var patients = ViewBag.Patients as List<Patients>;
+    var employees = ViewBag.Employees as List<Employees>;
+    var DTT = ViewBag.DTT as List<DoctorsTimeTable>;
+    var DD = ViewBag.DD as List<Department>;
+
+    var doctors = new List<Doctors>();
+    var doctorsJson = Json.Serialize(doctors.Select(d => new
+    {
+        id = d.Id,
+        name = $"{d.Name} - {d.DoctorRank} - {string.Join(" و ", d.AvailableDate.Select(a => a.AvailableTimes))}",
+        departmentId = d.DepartmentId
+    }));
+}
+
+<h2 class="text-center mb-4">إضافة حجز جديد</h2>
+<style>
+    input[disabled], input.form-control {
+    background-color: #1f1f1f;
+    color: #fff;
+    border: 1px solid #444;
+    }
+
+    select.form-control,
+    .select2-container--default .select2-selection--single {
+    background-color: #1f1f1f !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+    height: calc(2.25rem + 2px);
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #fff !important;
+    background-color: #1f1f1f !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    }
+
+    .select2-dropdown {
+    background-color: #1f1f1f !important;
+    color: #fff !important;
+    }
+
+    .select2-results__option {
+    background-color: #1f1f1f !important;
+    color: #fff !important;
+    }
+
+    .select2-results__option--highlighted {
+    background-color: #444 !important;
+    }
+</style>
+
+
+<div class="d-flex justify-content-center mt-3">
+    <div class="w-50 text-center">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger fw-bold fs-5 validation-summary-errors" })
+    </div>
+</div>
+
+<form asp-action="AddAppointment" method="post" class="p-4 border rounded shadow-sm">
+
+    <div class="form-group mb-3">
+        <label class="form-label">التخصص</label>
+        @Html.DropDownListFor(m => m.DepartmentId, (SelectList)ViewBag.DeptEnum, "اختر التخصص", new { @class = "form-control select2", id = "SpecializationSelect" })
+        @Html.ValidationMessageFor(m => m.DepartmentId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorId" class="form-label">اختر الطبيب</label>
+        <select asp-for="DoctorId" class="form-control select2" id="DoctorId" disabled>
+            <option value="">-- اختر الطبيب --</option>
+        </select>
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorAvailableTimeId" class="form-label">المواعيد المتاحة</label>
+        <select asp-for="DoctorAvailableTimeId" class="form-control" id="DoctorAvailableTimeId">
+            <option value="">-- المواعيد المتاحة --</option>
+        </select>
+        <span asp-validation-for="DoctorAvailableTimeId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="PatientId" class="form-label">المريض</label>
+        <select asp-for="PatientId" class="form-control select2">
+            <option value="">-- إختر المريض --</option>
+            @foreach (var p in patients)
+            {
+                <option value="@p.Id">@p.Name -
+                    @if (User.IsInRole("Patient") || User.IsInRole("Nurse")||User.IsInRole("Doctor"))
+                    {
+                        @($"{ p.Age} سنة")
+                    }
+                    @if (User.IsInRole("Admin") || User.IsInRole("Employee")) {
+                        @p.Phone
+                        }
+               </option >
+            }
+        </select>
+        <span asp-validation-for="PatientId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorDate" class="form-label">تاريخ الكشف</label>
+        <input asp-for="DoctorDate" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+        <span asp-validation-for="DoctorDate" class="text-danger"></span>
+    </div>
+
+    @if (User.IsInRole("Employee") )
+    {
+        <div class="form-group mb-3">
+            <label asp-for="EmployeeId" class="form-label">اختر الموظف</label>
+            <select asp-for="EmployeeId" class="form-control select2">
+                <option value="">-- اختر الموظف --</option>
+                @foreach (var e in employees)
+                {
+                    <option value="@e.Id">@e.Name - @e.Id</option>
+                }
+            </select>
+            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success">إضافة الحجز</button>
+    <a asp-action="GetAppointments" class="btn btn-secondary">إلغاء</a>
+</form>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+
+    <script>
+        var allDoctors = @Html.Raw(doctorsJson);
+
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "اختر من القائمة",
+                width: '100%'
+            });
+
+            $('#SpecializationSelect').on('change', function () {
+                var selectedDeptId = $(this).val();
+
+                $('#DoctorId').empty().append('<option value="">-- اختر الطبيب --</option>').prop('disabled', true);
+
+                $.get('/Appointments/GetDoctorsByDepartment', { departmentId: selectedDeptId }, function (data) {
+                    if (data.length === 0) {
+                        $('#DoctorId').append('<option disabled>لا يوجد أطباء لهذا التخصص</option>');
+                    } else {
+                        data.forEach(function (doc) {
+                            $('#DoctorId').append('<option value="' + doc.id + '">' + doc.name + '</option>');
+                        });
+                        $('#DoctorId').prop('disabled', false); 
+                    }
+                });
+
+                $('#DoctorId').val('').trigger('change');
+            });
+
+            $('#DoctorId').on('change', function () {
+                var doctorId = $(this).val();
+                $('#DoctorAvailableTimeId').html('<option value="">-- يرجى الانتظار --</option>');
+
+                if (doctorId) {
+                    $.get('/Appointments/GetAvailableTimesByDoctor', { doctorId: doctorId }, function (data) {
+                        $('#DoctorAvailableTimeId').empty().append('<option value="">-- اختر الموعد --</option>');
+                        $.each(data, function (i, item) {
+                            $('#DoctorAvailableTimeId').append('<option value="' + item.id + '">' + item.text + '</option>');
+                        });
+                    });
+                } else {
+                    $('#DoctorAvailableTimeId').empty().append('<option value="">-- اختر الموعد --</option>');
+                }
+            });
+        });
+    </script>
+}

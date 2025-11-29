@@ -1,0 +1,77 @@
+﻿@using Hospital_Project.Entities
+@using Hospital_Project.Entities.Enums
+@model Hospital_Project.Entities.DTOs.DoctorsDto
+
+@{
+    ViewData["Title"] = "تعديل بيانات الطبيب  ";
+    var docdept = ViewBag.DocDept as Department;
+}
+
+<h2 class="text-center mb-4">تعديل بيانات الطبيب</h2>
+
+<form asp-action="UpdateDoctor" method="post" class="p-4 border rounded shadow-sm">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label">الاسم</label>
+        <input asp-for="Name" class="form-control" readonly />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Age" class="form-label">العمر</label>
+        <input asp-for="Age" class="form-control" type="number" />
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Gender" class="form-label">النوع</label>
+        <input asp-for="Gender" class="form-control" readonly>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Phone" class="form-label">رقم الهاتف</label>
+        <input asp-for="Phone" class="form-control" type="number" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div> 
+    <div class="form-group mb-3">
+        <label asp-for="Salary" class="form-label">الراتب </label>
+        <input asp-for="Salary" class="form-control" type="number" />
+        <span asp-validation-for="Salary" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">التخصص</label>
+        <input class="form-control" value="@docdept?.Name" readonly />
+    </div>
+
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorRank" class="form-label">الرتبة الطبية</label>
+        <select asp-for="DoctorRank" class="form-control" asp-items="Html.GetEnumSelectList<DoctorRank>()">
+            <option value="">-- اختر الرتبة --</option>
+
+        </select>
+        <span asp-validation-for="DoctorRank" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="BookingSalary" class="form-label">سعر الكشف </label>
+        <input asp-for="BookingSalary" class="form-control" />
+        <span asp-validation-for="Salary" class="text-danger"></span>
+    </div>   
+    <div class="form-group mb-3">
+        <label asp-for="NumberOFPatientsonDaysofwork" class="form-label"> أقصى عدد من المرضى </label>
+        <input asp-for="NumberOFPatientsonDaysofwork" class="form-control" />
+        <span asp-validation-for="NumberOFPatientsonDaysofwork" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+    <a asp-action="GetDoctors" class="btn btn-secondary">إلغاء</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

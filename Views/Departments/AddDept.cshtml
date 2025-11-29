@@ -1,0 +1,33 @@
+﻿@model Hospital_Project.Entities.DTOs.DepartmentDto
+
+@{
+    ViewBag.Title = "إضافة قسم جديد";
+}
+
+<h2 class="mb-4 text-center">إضافة قسم جديد</h2>
+
+<form asp-action="AddDept" method="post" class="w-50 mx-auto">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">القسم</label>
+        <select asp-for="Name" class="form-control select2" asp-items="ViewBag.DeptEnum">
+            <option value="">اختر قسم</option>
+        </select>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">حفظ</button>
+    <a asp-action="ShowDepartments" class="btn btn-secondary">رجوع</a>
+</form>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2();
+        });
+    </script>
+}

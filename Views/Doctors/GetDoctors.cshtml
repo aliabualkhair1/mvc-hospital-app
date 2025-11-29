@@ -1,0 +1,161 @@
+﻿
+
+ @model IEnumerable<Doctors>
+@{
+    ViewData["Title"] = "قائمة الأطباء";
+}
+<style>
+    .overflow-x-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nowrap {
+        white-space: nowrap;
+    }
+</style>
+<h2 class="text-primary mb-4">قائمة الأطباء</h2>
+@if (TempData["Success"] != null)
+{
+    <div id="successMessage"
+         class="alert alert-success text-center position-fixed start-50 translate-middle-x"
+         style="top: 20px; z-index: 9999; font-size: 18px; min-width: 300px;">
+        @TempData["Success"]
+    </div>
+}
+
+<div class="mb-4">
+    <div class="d-flex flex-column align-items-start gap-2">
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="btn btn-success" style="width: 300px;" asp-action="AddDoctors">إضافة طبيب جديد</a>
+        }
+
+        <form method="get" asp-action="GetDoctors" asp-controller="Doctors" class="d-flex flex-column align-items-start gap-2">
+            <input placeholder="بحث بالإسم" name="searchengine" class="form-control" style="width: 300px;" />
+            <input type="submit" value="بحث" class="btn btn-success" style="width: 300px;" />
+        </form>
+    </div>
+</div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light text-center fs-4 fw-bold text-dark">
+            لا يوجد أطباء حتى الأن
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover shadow rounded" style="min-width:3800px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>الرقم</th>
+                        <th>الاسم</th>
+                        <th>العمر</th>
+                        <th>النوع</th>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th>رقم الهاتف</th>
+                            <th>الراتب</th>
+                        }
+                        <th>التخصص</th>
+                        <th>الرتبة</th>
+                        <th>سعر الكشف</th>
+                        <th>أيام التواجد</th>
+                        <th>وقت البدء</th>
+                        <th>وقت الانتهاء</th>
+                        <th>أقصى عدد من المرضى</th>
+                        <th>الممرضين المرتبطين</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var doctor in Model)
+                    {
+                        <tr>
+                            <td>@doctor.Id</td>
+                            <td>@doctor.Name</td>
+                            <td>@doctor.Age</td>
+                            <td>@doctor.Gender</td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td>@doctor.Phone</td>
+                                <td>@doctor.Salary</td>
+                            }
+                            <td>@doctor.Department.Name</td>
+                            <td>@doctor.DoctorRank</td>
+                            <td>@doctor.BookingSalary</td>
+                            <td>
+                                @if (doctor.AvailableDate != null && doctor.AvailableDate.Any())
+                                {
+                                    foreach (var availabledate in doctor.AvailableDate)
+                                    {
+                                        @availabledate.AvailableTimes <br />
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (doctor.AvailableDate != null && doctor.AvailableDate.Any())
+                                {
+                                    foreach (var availabledate in doctor.AvailableDate)
+                                    {
+                                        @availabledate.StartTime.ToString("hh:mm tt") <br />
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (doctor.AvailableDate != null && doctor.AvailableDate.Any())
+                                {
+                                    foreach (var availabledate in doctor.AvailableDate)
+                                    {
+                                        @availabledate.EndTime.ToString("hh:mm tt") <br />
+                                    }
+                                }
+                            </td>
+                            <td>@doctor.NumberOFPatientsonDaysofwork</td>
+                            <td>
+                                @if (doctor.Nurses != null && doctor.Nurses.Any())
+                                {
+                                    foreach (var docNurse in doctor.Nurses)
+                                    {
+                                        <span class="badge bg-info text-dark mb-1 me-1">@docNurse.Nurse?.Name</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">لا يوجد</span>
+                                }
+                            </td>
+                            <td class="text-nowrap">
+                                <div class="d-flex flex-wrap gap-2">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="UpdateDoctor" asp-route-id="@doctor.Id" class="btn btn-warning btn-sm">تعديل</a>
+                                        <a asp-action="DeleteDoctor" asp-route-id="@doctor.Id" class="btn btn-danger btn-sm">حذف</a>
+                                    }
+                                    <a asp-action="GetNumberOfPatientsInSpecificDay" asp-route-id="@doctor.Id" class="btn btn-success btn-sm">أعداد الكشف</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+@section scripts {
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById("successMessage");
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease-out";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                    alert.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+}

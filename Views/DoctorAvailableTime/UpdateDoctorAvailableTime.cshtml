@@ -1,0 +1,64 @@
+﻿@using Hospital_Project.Entities.DaysEnum
+@model Hospital_Project.Entities.DTOs.DoctorAvailableTimeDTO
+
+@{
+    ViewData["Title"] = "تحديث موعد تواجد الطبيب  ";
+   var DAT= ViewBag.Doctors as List<Doctors>;
+}
+
+<h2>تحديث موعد تواجد الطبيب</h2>
+
+<form asp-action="UpdateDoctorAvailableTime" method="post" class="mt-3">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="DoctorId" class="form-label">اختر الطبيب</label>
+        <select asp-for="DoctorId" class="form-select" onmousedown="return false;" >
+            <option value="">-- اختر الطبيب --</option>
+            @foreach(var AT in DAT){
+                <option value="@AT.Id">
+                @AT.Name - @AT.Department.Name - @AT.DoctorRank
+                </option>
+            }
+        </select>
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="AvailableTimes" class="form-label">أيام العمل</label>
+        <select asp-for="AvailableTimes" class="form-control"
+                asp-items="Html.GetEnumSelectList<Daysofweek>()">
+            <option value="">-- اختر اليوم --</option>
+        </select>
+        <span asp-validation-for="AvailableTimes" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StartTime" class="form-label">وقت البدء</label>
+        <input asp-for="StartTime" class="form-control" type="time" />
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EndTime" class="form-label">وقت الانتهاء</label>
+        <input asp-for="EndTime" class="form-control" type="time" />
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+    <a asp-action="GetAllavailabledates" class="btn btn-secondary ms-2">إلغاء</a>
+</form>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+<script>
+    $(document).ready(function () {
+        $('.select2').select2({
+            allowClear: false,
+            width: '100%'
+        });
+    });
+</script>

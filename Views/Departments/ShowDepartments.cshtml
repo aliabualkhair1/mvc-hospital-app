@@ -1,0 +1,109 @@
+﻿@model List<Hospital_Project.Entities.Department>
+@{
+    ViewBag.Title = "عرض الأقسام";
+}
+<div class="container mt-0">
+    @if (User.IsInRole("Admin"))
+    {
+
+        <h2 class="text-primary mb-4">قائمة الأقسام</h2>
+
+        <div style="width: 350px;">
+            <a class="btn btn-success w-100" asp-action="AddDept">إضافة قسم جديد</a>
+        </div>
+    }
+    else
+    {
+        <h2 class="text-primary mb-4">قائمة الأقسام</h2>
+    }
+</div>
+@if (TempData["Success"] != null)
+{
+    <div id="successMessage"
+         class="alert alert-success text-center position-fixed start-50 translate-middle-x"
+         style="top: 20px; z-index: 9999; font-size: 18px; min-width: 300px;">
+        @TempData["Success"]
+    </div>
+}
+
+
+
+    <form class="my-3" method="get" asp-action="ShowDepartments" asp-controller="Departments">
+        <div class="row">
+            <div class="col-sm-8">
+                <input placeholder="بحث بالإسم " name="searchengine" class="form-control" />
+            </div>
+            <div class="col-sm-4">
+                <input type="submit" value="بحث" class="btn btn-success btn-block" />
+            </div>
+        </div>
+    </form>
+@if (!Model.Any())
+{
+    <div class="alert alert-light text-center fs-4 fw-bold text-dark">
+        لا يوجد أقسام حتى الأن
+    </div>
+}
+else{
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>رقم القسم</th>
+            <th>اسم القسم</th>
+            <th>عدد الأطباء</th>
+            <th>عدد الممرضين</th>
+            @if(User.IsInRole("Admin")){
+
+            <th>الإجراءات</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dept in Model)
+        {
+            <tr>
+                <td>@dept.Id</td>
+                <td>@dept.Name</td>
+                <td>
+                    @if(dept.Doctors!=null&&dept.Doctors.Any()){
+                                @dept.Doctors.Count()
+                    }
+                    else{
+                       @:0
+                    }
+                </td>
+                <td>
+                    @if (dept.Nurses != null && dept.Nurses.Any())
+                    {
+                        @dept.Nurses.Count()
+                    }
+                    else
+                    {
+                        @:0
+                    }
+                </td>
+@if(User.IsInRole("Admin")){
+                            <td>
+                                <a href="@Url.Action("UpdateDept", "Departments", new { id = dept.Id })" class="btn btn-warning btn-sm"> تعديل</a>
+                                <a href="@Url.Action("DeleteDept", "Departments", new { id = dept.Id })" class="btn btn-danger btn-sm"> حذف</a>
+                            </td>
+}
+            </tr>
+        }
+    </tbody>
+</table>
+}
+@section scripts {
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById("successMessage");
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease-out";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                    alert.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+}

@@ -1,0 +1,374 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> مستشفى الخير</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+        --sidebar-bg: #0f172a;
+        --sidebar-link: #e2e8f0;
+        --sidebar-hover: #1e293b;
+        --main-bg: #020617;
+        --card-bg: #0f172a;
+        --text-light: #f1f5f9;
+        --placeholder-color: #ffffff;
+        }
+        [data-bs-theme="light"] {
+        --sidebar-bg: #f1f5f9;
+        --sidebar-link: #0f172a;
+        --sidebar-hover: #cbd5e1;
+        --main-bg: #ffffff;
+        --card-bg: #f8fafc;
+        --text-light: #0f172a;
+        --placeholder-color: #000000;
+        }
+        body {
+        display: flex;
+        margin: 0;
+        background-color: var(--main-bg);
+        color: var(--text-light);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .sidebar {
+        width: 230px;
+        min-height: 100vh;
+        background-color: var(--sidebar-bg);
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left:0;
+        overflow-y:auto;
+        overflow-x:hidden
+        }
+        .sidebar-logo {
+        width: 170px;
+        margin-bottom: 1.3rem;
+        border-radius:50%;
+        margin-right:20px;
+        }
+        .sidebar:hover{
+        width:231px;
+        transition: all 0.3s ease-in-out;
+        }
+        .sidebar a.nav-link-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        width: 100%;
+        color: var(--sidebar-link);
+        text-decoration: none;
+        font-weight: 500;
+        border-radius: 0.5rem;
+        transition: background 0.3s, transform 0.2s;
+        }
+
+        .sidebar a.nav-link-custom:hover {
+        background-color: var(--sidebar-hover);
+        transform: translateX(3px);
+        }
+
+        .logout-btn,
+        .theme-toggle {
+        background-color: transparent;
+        color: var(--sidebar-link);
+        border: 1px solid var(--sidebar-link);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+        }
+
+        .logout-btn:hover{
+        background-color: red;
+        color: black;
+        font-weight: bold
+        }
+        .theme-toggle:hover{
+        background-color: var(--sidebar-hover);
+        color: var(--text-light);
+        font-weight: bold
+        }  
+        {
+        background-color: var(--sidebar-hover);
+        color: var(--text-light);
+        }
+
+        .main-content {
+        margin-left: 230px;
+        padding: 2rem;
+        background-color: var(--main-bg);
+        width: 100%;
+        min-height: 100vh;
+        }
+
+        .card-custom {
+        background-color: var(--card-bg);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        margin-bottom: 1rem;
+        }
+
+        input,
+        textarea,
+        select {
+        background-color: var(--card-bg);
+        color: var(--text-light);
+        border: 1px solid #475569;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        }
+
+        .logout-btn {
+        background-color: transparent;
+        color: var(--sidebar-link);
+        border: 1px solid var(--sidebar-link);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+        background-color: red;
+        color: black;
+        font-weight: bold;
+        }
+
+        .theme-style-btn {
+        background-color: transparent;
+        color: var(--sidebar-link);
+        border: 1px solid var(--sidebar-link);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+        }
+
+        .theme-style-btn:hover {
+        background-color: var(--sidebar-hover);
+        color: var(--text-light);
+        font-weight: bold;
+        }
+
+        input::placeholder,
+        textarea::placeholder,
+        select::placeholder {
+        color: var(--placeholder-color);
+        opacity: 1;
+        }
+
+        .select2-container--default .select2-selection--single {
+        background-color: var(--card-bg);
+        color: var(--text-light);
+        border: 1px solid #475569;
+        }
+
+        .select2-dropdown {
+        background-color: var(--card-bg);
+        color: var(--text-light);
+        }
+
+        .select2-results__option--highlighted {
+        background-color: #334155;
+        color: #38bdf8;
+        }
+
+        .nav-button {
+        background-color: #1c1e2f;
+        margin: 10px 15px;
+        padding: 10px;
+        border-radius: 12px;
+        text-align: right;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+
+        }
+
+        [data-bs-theme="dark"] .select2-container--default .select2-selection--single {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            border: 1px solid #475569;
+        }
+
+            [data-bs-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+                color: var(--text-light);
+            }
+
+            [data-bs-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__arrow b {
+                border-color: var(--text-light) transparent transparent transparent;
+            }
+
+        [data-bs-theme="dark"] .select2-dropdown {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            border: 1px solid #475569;
+        }
+
+        [data-bs-theme="dark"] .select2-results__option {
+            color: var(--text-light);
+        }
+
+        [data-bs-theme="dark"] .select2-results__option--highlighted {
+            background-color: #334155;
+            color: #38bdf8;
+        }
+
+
+        [data-bs-theme="light"] .select2-container--default .select2-selection--single {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            border: 1px solid #94a3b8;
+        }
+
+            [data-bs-theme="light"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+                color: var(--text-light);
+            }
+
+            [data-bs-theme="light"] .select2-container--default .select2-selection--single .select2-selection__arrow b {
+                border-color: var(--text-light) transparent transparent transparent;
+            }
+
+        [data-bs-theme="light"] .select2-dropdown {
+            background-color: var(--card-bg);
+            color: var(--text-light);
+            border: 1px solid #94a3b8;
+        }
+
+        [data-bs-theme="light"] .select2-results__option {
+            color: var(--text-light);
+        }
+
+        [data-bs-theme="light"] .select2-results__option--highlighted {
+            background-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+
+    </style>
+</head>
+<body data-bs-theme="dark">
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="sidebar">
+            <img src="~/HospitalLogo.png" class="sidebar-logo" alt="شعار المستشفى" />
+            @if(User.IsInRole("Admin")|| User.IsInRole("Patient") || User.IsInRole("Doctor") || User.IsInRole("Nurse") || User.IsInRole("Employee")){
+                <a class="nav-link-custom" asp-controller="Departments" asp-action="ShowDepartments"><i class="fas fa-building"></i> الأقسام</a>}
+            @if(User.IsInRole("Admin")){
+                <a class="nav-link-custom" asp-controller="Employees" asp-action="ShowEmployees"><i class="fas fa-user-tie"></i> الموظفين</a>
+
+            }
+            @if (User.IsInRole("Admin")||User.IsInRole("Doctor")||User.IsInRole("Employee")||User.IsInRole("Nurse"))
+            {
+                <a class="nav-link-custom" asp-controller="Doctors" asp-action="GetDoctors"><i class="fas fa-user-md"></i> الأطباء</a>
+            }
+            @if (User.IsInRole("Admin") || User.IsInRole("Patient") || User.IsInRole("Doctor") || User.IsInRole("Nurse") || User.IsInRole("Employee"))
+            {
+                <a class="nav-link-custom" asp-controller="DoctorAvailableTime" asp-action="GetAllavailabledates"><i class="fas fa-calendar-check"></i> مواعيد الأطباء</a>
+           }
+                @if (User.IsInRole("Admin")){
+                <a class="nav-link-custom" asp-controller="Nurses" asp-action="ShowNurses"><i class="fas fa-user-nurse"></i> طاقم التمريض</a>
+            }
+            @if (User.IsInRole("Admin") || User.IsInRole("Patient") || User.IsInRole("Employee")||User.IsInRole("Nurse")||User.IsInRole("Doctor"))
+            {
+                <a class="nav-link-custom" asp-controller="Patients" asp-action="ShowPatients"><i class="fas fa-procedures"></i> المرضى</a>
+            }
+            @if (User.IsInRole("Admin") || User.IsInRole("Patient") || User.IsInRole("Doctor") || User.IsInRole("Nurse") || User.IsInRole("Employee"))
+            {
+            <a class="nav-link-custom" asp-controller="Appointments" asp-action="GetAppointments"><i class="fas fa-calendar"></i> المواعيد</a>
+            <a class="nav-link-custom" asp-controller="ComplaintsAndSuggestions" asp-action="GetAllComplaintsAndSuggestions"><i class="fas fa-comment-dots"></i> الشكاوى والاقتراحات</a>
+            }
+            <button class="theme-toggle mt-3" id="themeToggleBtn"><span id="themeIcon">🌙</span> تغيير الوضع</button>
+            @if (User.IsInRole("Admin") && User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="Admin" asp-action="Show" method="get" class="w-100">
+                    <button type="submit" class="theme-style-btn mt-2">
+                        <i class="fas fa-user-shield"></i> لوحة الأدمن
+                    </button>
+                </form>
+            }
+
+            <form asp-controller="UserInfo" asp-action="AccountDetails" method="get" class="w-100">
+                <button type="submit" class="theme-style-btn mt-2">
+                    <i class="fas fa-user"></i> حسابي
+                </button>
+            </form>
+
+
+
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form asp-controller="UserInfo" asp-action="SignOut" method="post" class="mt-3 w-100" onsubmit="return confirm('هل أنت متأكد من تسجيل الخروج');">
+                    <button class="logout-btn"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+                </form>
+            }
+
+            
+        </div>
+    }
+
+    <div class="main-content">
+        @if (TempData["RateLimitMessage"] != null)
+{
+    <div class="d-flex justify-content-center mt-3">
+        <div class="alert alert-danger alert-dismissible fade show w-75 text-center" role="alert">
+            @TempData["RateLimitMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+}
+        @RenderBody()
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        const root = document.documentElement;
+        const toggleBtn = document.getElementById("themeToggleBtn");
+        const icon = document.getElementById("themeIcon");
+
+        let currentTheme = localStorage.getItem("theme") || "dark";
+        applyTheme(currentTheme);
+
+        toggleBtn.onclick = function () {
+            currentTheme = currentTheme === "dark" ? "light" : "dark";
+            localStorage.setItem("theme", currentTheme);
+            applyTheme(currentTheme);
+        };
+
+        function applyTheme(theme) {
+            document.body.setAttribute("data-bs-theme", theme);
+            icon.textContent = theme === "dark" ? "🌞" : "🌙";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if ($ && $.fn.select2) {
+                $('.select2').select2();
+            }
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

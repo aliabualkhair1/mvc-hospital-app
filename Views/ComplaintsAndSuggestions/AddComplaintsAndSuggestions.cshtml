@@ -1,0 +1,31 @@
+﻿@model Hospital_Project.Entities.DTOs.ComplaintsAndSuggestionsDto
+@{
+    ViewData["Title"] = "إضافة شكوى أو اقتراح  ";
+}
+
+
+<div class="container mt-5">
+   <h2 class="text-center mb-4">إضافة شكوى أو اقتراح</h2>
+    <form asp-action="AddComplaintsAndSuggestions" method="post">
+        <div class="mb-3">
+            <label class="form-label">الاسم</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">رقم الهاتف</label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">الشكوى أو الاقتراح</label>
+            <textarea asp-for="ProblemandSuggestion" style="resize:none;height:30vh; overflow-y:hidden" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="ProblemandSuggestion" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">إرسال</button>
+        <a asp-action="Index"  asp-controller="Home" class="btn btn-secondary ms-2">إلغاء</a>
+    </form>
+</div>

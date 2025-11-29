@@ -1,0 +1,33 @@
+﻿@model Hospital_Project.Entities.DTOs.EmployeesDto
+
+@{
+    ViewData["Title"] = "حذف موظف  ";
+}
+
+<h2 class="text-center text-danger">هل أنت متأكد أنك تريد حذف هذا الموظف؟</h2>
+
+<div class="border p-4 shadow-sm">
+    <dl class="row">
+        <dt class="col-sm-2">الاسم</dt>
+        <dd class="col-sm-10">@Model.Name</dd>
+
+        <dt class="col-sm-2">العمر</dt>
+        <dd class="col-sm-10">@Model.Age</dd>
+
+        <dt class="col-sm-2">النوع</dt>
+        <dd class="col-sm-10">@Model.Gender</dd>
+
+        <dt class="col-sm-2">رقم الهاتف</dt>
+        <dd class="col-sm-10">@Model.Phone</dd>
+        <dt class="col-sm-2"> طبيعة العمل </dt>
+        <dd class="col-sm-10">@Model.NatureOfWork</dd>
+        <dt class="col-sm-2"> الراتب</dt>
+        <dd class="col-sm-10">@Model.Salary</dd>
+    </dl>
+
+    <form asp-action="DeleteEmployee" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">حذف</button>
+        <a asp-action="ShowEmployees" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>

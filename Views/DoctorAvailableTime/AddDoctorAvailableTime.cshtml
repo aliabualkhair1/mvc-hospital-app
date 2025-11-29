@@ -1,0 +1,62 @@
+﻿@using Hospital_Project.Entities
+@using Hospital_Project.Entities.DTOs 
+@using Hospital_Project.Entities.DaysEnum
+@model DoctorAvailableTimeDTO
+@{
+    ViewData["Title"] = "إضافة مواعيد تواجد الطبيب";
+    var doctors = ViewBag.Doctors as List<Doctors>;
+
+}
+
+<h2 class="text-center mb-4">إضافة مواعيد تواجد الطبيب</h2>
+
+<form asp-action="AddDoctorAvailableTime" method="post" class="p-4 border rounded shadow-sm">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorId" class="form-label">اختر الطبيب </label>
+        <select asp-for="DoctorId" class="form-control select2" onmousedown="return false;">
+            <option value="">--  إختر الطبيب  --</option>
+            @foreach (var d in doctors)
+            {
+                <option value="@d.Id">@d.Name - @d.Department.Name - @d.DoctorRank -@d.Phone</option>
+            }
+        </select>
+        <span asp-validation-for="DoctorId" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="AvailableTimes" class="form-label">أيام العمل</label>
+        <select asp-for="AvailableTimes" class="form-control"
+                asp-items="Html.GetEnumSelectList<Daysofweek>()">
+            <option value="">-- اختر اليوم --</option>
+        </select>
+        <span asp-validation-for="AvailableTimes" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="StartTime" class="form-label">وقت البدء</label>
+        <input asp-for="StartTime" class="form-control" type="time" />
+        <span asp-validation-for="StartTime" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="EndTime" class="form-label">وقت الانتهاء</label>
+        <input asp-for="EndTime" class="form-control" type="time" />
+        <span asp-validation-for="EndTime" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">إضافة موعد التواجد</button>
+    <a asp-action="GetAllavailabledates" class="btn btn-secondary">إلغاء</a>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                allowClear: false,
+                width: '100%'
+            });
+        });
+    </script>
+}

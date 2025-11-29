@@ -1,0 +1,86 @@
+﻿@using Hospital_Project.Entities
+@model IEnumerable<Hospital_Project.Entities.DoctorsTimeTable>
+@{
+    ViewData["Title"] = "مواعيد تواجد الأطباء  ";
+}
+<div class="container mt-0">
+    <h2 class="text-primary mb-4">قائمة مواعيد تواجد الأطباء</h2>
+    @if (TempData["Success"] != null)
+    {
+        <div id="successMessage"
+             class="alert alert-success text-center position-fixed start-50 translate-middle-x"
+             style="top: 20px; z-index: 9999; font-size: 18px; min-width: 300px;">
+            @TempData["Success"]
+        </div>
+    }
+    <div style="width: 350px;">
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="btn btn-success w-100 mb-3" asp-action="AddDoctorAvailableTime">إضافة موعد تواجد جديد</a>
+        }
+
+        <form method="get" asp-action="GetAllavailabledates" asp-controller="DoctorAvailableTime">
+            <div class="mb-2">
+                <input placeholder="بحث بالإسم" name="searchengine" class="form-control" />
+            </div>
+            <div>
+                <input type="submit" value="بحث" class="btn btn-success w-100" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-light text-center fs-4 fw-bold text-dark">
+        لا توجد مواعيد أطباء حتى الأن
+    </div>
+}
+else{
+
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-dark">
+        <tr>
+            <th> إسم الطبيب</th>
+            <th>أيام التواجد</th>
+            <th>وقت البدء</th>
+            <th>وقت الانتهاء</th>
+            @if(User.IsInRole("Admin")){
+
+            <th>الإجراءات</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Doctor.Name - @item.Doctor.Department.Name - @item.Doctor.DoctorRank </td>
+                <td>@item.AvailableTimes.ToString()</td>
+                <td> @item.StartTime.ToString("hh:mm tt")</td>
+                <td> @item.EndTime.ToString("hh:mm tt")</td>
+@if(User.IsInRole("Admin")){
+                            <td>
+                                <a asp-action="UpdateDoctorAvailableTime" asp-route-id="@item.Id" class="btn btn-sm btn-warning">تعديل</a>
+                                <a asp-action="DeleteDoctorAvailableTime" asp-route-id="@item.Id" class="btn btn-sm btn-danger">حذف</a>
+                            </td>
+}
+            </tr>
+        }
+    </tbody>
+</table>
+}
+@section scripts {
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById("successMessage");
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease-out";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                    alert.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+}

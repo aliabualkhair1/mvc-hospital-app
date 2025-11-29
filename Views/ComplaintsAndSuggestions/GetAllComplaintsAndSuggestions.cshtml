@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Hospital_Project.Entities.ComplaintsAndSuggestions>
+
+@{
+    ViewData["Title"] = "قائمة الشكاوى والاقتراحات  ";
+}
+<h2 class="text-primary mb-4">قائمة الشكاوى والإقتراحات</h2>
+<div class="mb-2" style="width: 350px;">
+    <a class="btn btn-success w-100" asp-action="AddComplaintsAndSuggestions">إضافة شكوى أو إقتراح</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div id="successMessage"
+         class="alert alert-success text-center position-fixed start-50 translate-middle-x"
+         style="top: 20px; z-index: 9999; font-size: 18px; min-width: 300px;">
+        @TempData["Success"]
+    </div>
+}
+
+<div class="container mt-5">
+
+        <form class="my-3" method="get" asp-action="GetAllComplaintsAndSuggestions" asp-controller="ComplaintsAndSuggestions">
+            <div class="row">
+            <div class="col-sm-8">
+                <input placeholder="بحث  برقم الشكوى" name="id" class="form-control" />
+            </div>
+            <div class="col-sm-4">
+                <input type="submit" value="بحث" class="btn btn-success btn-block" />
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-light text-center fs-4 fw-bold text-dark">
+            لا توجد شكاوى أو اقتراحات حتى الأن
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>رقم الشكوى</th>
+                    <th>تاريخ الشكوى</th>
+                    <th>الاسم</th>
+                    <th>رقم الهاتف</th>
+                    <th>الرسالة</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.ProblemandSuggestionDate</td>
+                        <td>@item.Name</td>
+                        <td>@item.Phone</td>
+                        <td>@item.ProblemandSuggestion</td>
+                        <td>
+                            <a class="btn btn-sm btn-danger" asp-action="DeleteComplaintsAndSuggestions" asp-route-id="@item.Id">حذف</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+@section scripts {
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById("successMessage");
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease-out";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                    alert.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+}

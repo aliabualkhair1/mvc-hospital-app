@@ -1,0 +1,88 @@
+﻿@using Hospital_Project.Entities.Enums
+@model Hospital_Project.Entities.DTOs.DoctorsDto
+
+@{
+    ViewData["Title"] = "إضافة طبيب جديد  ";
+}
+
+<h2 class="text-center mb-4">إضافة طبيب جديد</h2>
+
+<form asp-action="AddDoctors" method="post" class="p-4 border rounded shadow-sm">
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label">الاسم</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Age" class="form-label">العمر</label>
+        <input asp-for="Age" class="form-control" type="number" />
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Gender" class="form-label">النوع</label>
+        <select asp-for="Gender" class="form-control">
+            <option value="">-- اختر النوع --</option>
+            <option value="ذكر">ذكر</option>
+            <option value="أنثى">أنثى</option>
+        </select>
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Salary" class="form-label"> الراتب</label>
+        <input asp-for="Salary" class="form-control" />
+        <span asp-validation-for="Salary" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-3">
+        <label asp-for="DepartmentId" class="form-label">التخصص</label>
+        @Html.DropDownListFor(m => m.DepartmentId, (SelectList)ViewBag.DeptEnum, "اختر التخصص", new { @class = "form-control select2" })
+        @Html.ValidationMessageFor(m => m.DepartmentId, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Phone" class="form-label">رقم الهاتف</label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="DoctorRank" class="form-label">الرتبة الطبية</label>
+        <select asp-for="DoctorRank" class="form-control" asp-items="Html.GetEnumSelectList<DoctorRank>()">
+            <option value="">-- اختر الرتبة --</option>
+        </select>
+        <span asp-validation-for="DoctorRank" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="BookingSalary" class="form-label">سعر الكشف</label>
+        <input asp-for="BookingSalary" class="form-control" type="number" />
+        <span asp-validation-for="BookingSalary" class="text-danger"></span>
+    </div>  
+    <div class="form-group mb-3">
+        <label asp-for="NumberOFPatientsonDaysofwork" class="form-label">أقصى عدد من المرضى فى اليوم </label>
+        <input asp-for="NumberOFPatientsonDaysofwork" class="form-control" type="number" />
+        <span asp-validation-for="NumberOFPatientsonDaysofwork" class="text-danger"></span>
+    </div>   
+    <button type="submit" class="btn btn-success">إضافة الطبيب</button>
+    <a asp-action="GetDoctors" class="btn btn-secondary">إلغاء</a>
+</form>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- تأكد من وجود jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "اختر التخصص",
+              //  dir: "rtl",
+                width: '100%'
+            });
+        });
+    </script>
+}

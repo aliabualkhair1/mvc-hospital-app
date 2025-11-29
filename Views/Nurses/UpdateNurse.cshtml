@@ -1,0 +1,174 @@
+﻿@model Hospital_Project.Entities.DTOs.NursesDto
+
+@{
+    ViewBag.Title = "تعديل بيانات الممرض";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    input.form-control,
+    select.form-control,
+    textarea.form-control,
+    .select2-container--default .select2-selection--single,
+    .select2-container--default .select2-selection--multiple,
+    .select2-container--default .select2-selection--multiple .select2-selection__choice,
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #000 !important;
+        color: #fff !important;
+        border: 1px solid #444 !important;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered,
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            color: #fff !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #222 !important;
+            border: 1px solid #555 !important;
+            color: #fff !important;
+        }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #333 !important;
+        color: #fff !important;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: #ccc !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #fff transparent transparent transparent !important;
+    }
+</style>
+
+<form asp-action="UpdateNurse" method="post" class="w-75 mx-auto">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Age" class="form-label">العمر</label>
+            <input asp-for="Age" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Name" class="form-label">الاسم</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="Gender" class="form-label">النوع</label>
+            <select asp-for="Gender" class="form-control">
+                <option value="">--اختر--</option>
+                <option value="ذكر">ذكر</option>
+                <option value="أنثى">أنثى</option>
+            </select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="Phone" class="form-label">الهاتف</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="EndTime" class="form-label">وقت الانتهاء</label>
+            <input asp-for="EndTime" type="time" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="StartTime" class="form-label">وقت البدء</label>
+            <input asp-for="StartTime" type="time" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Salary" class="form-label">الراتب</label>
+        <input asp-for="Salary" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Departmentid" class="form-label">القسم</label>
+        <select id="Departmentid" asp-for="Departmentid" class="form-control select2" asp-items="ViewBag.Departments">
+            <option value="">--اختر القسم--</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">الأطباء</label>
+        <select id="DoctorsSelect" name="selectedDoctorIds" class="form-control select2" multiple></select>
+    </div>
+
+    <div style="margin-top:10px" class="text-left">
+        <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+        <a asp-action="ShowNurses" class="btn btn-secondary">رجوع</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        const selectedDoctorIds = @Html.Raw(Json.Serialize(ViewBag.SelectedDoctorIds ?? new List<int>()));
+
+        function loadDoctors(departmentId, selectedIds = []) {
+            const $doctorSelect = $('#DoctorsSelect');
+
+            if (departmentId) {
+                $.ajax({
+                    url: '/Nurses/GetDoctorsByDepartment',
+                    type: 'GET',
+                    data: { departmentId: departmentId },
+                    success: function (data) {
+                        $doctorSelect.empty();
+
+                        $.each(data, function (i, doctor) {
+                            const option = $('<option></option>')
+                                .val(doctor.id)
+                                .text(doctor.name);
+
+                            if (selectedIds.includes(doctor.id)) {
+                                option.attr('selected', 'selected');
+                            }
+
+                            $doctorSelect.append(option);
+                        });
+
+        $doctorSelect.select2({
+            placeholder: "اختر من القائمة",
+            width: '100%'
+        }).on('select2:open', function () {
+            // مفيش حاجة هنا، بس بس بنأكد إن select2 شغالة
+        });
+
+        // نستخدم setTimeout صغير علشان نضمن إن التهيئة خلصت
+        setTimeout(() => {
+            $doctorSelect.val(selectedIds).trigger('change');
+        }, 100);
+
+                    },
+                    error: function () {
+                        console.error("فشل في جلب الأطباء من السيرفر.");
+                    }
+                });
+            } else {
+                $doctorSelect.empty().trigger('change.select2');
+            }
+        }
+
+        $(document).ready(function () {
+            const currentDepartmentId = $('#Departmentid').val();
+            loadDoctors(currentDepartmentId, selectedDoctorIds);
+
+            $('#Departmentid').on('change', function () {
+                const newDeptId = $(this).val();
+                loadDoctors(newDeptId);
+            });
+        });
+    </script>
+}

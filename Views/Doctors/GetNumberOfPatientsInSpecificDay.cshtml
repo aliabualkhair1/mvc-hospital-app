@@ -1,0 +1,24 @@
+﻿@model int
+@{
+    ViewData["Title"] = "عدد المرضى في يوم معين";
+    var selectedDate = Context.Request.Query["date"].ToString();
+    var doctorid = ViewBag.DoctorId;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (Context.Request.Query.ContainsKey("date"))
+{
+    <div class="alert alert-info">
+        عدد المرضى في التاريخ المطلوب: <strong>@Model</strong>
+    </div>
+}
+
+<form asp-action="GetNumberOfPatientsInSpecificDay" method="get">
+<input type="hidden" name="doctorId" value="@ViewBag.DoctorId" />
+    <div class="form-group">
+        <label>اختر التاريخ:</label>
+        <input type="date" name="date" class="form-control" value="@selectedDate" required />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">بحث</button>
+</form>

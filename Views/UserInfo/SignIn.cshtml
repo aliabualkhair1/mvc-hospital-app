@@ -1,0 +1,46 @@
+﻿@model Hospital_Project.Entities.UserDTOs.SignIn
+
+@{
+    ViewBag.Title = "تسجيل الدخول";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<h3 class="text-center mb-4">تسجيل الدخول</h3>
+@using (Html.BeginForm("SignIN", "UserInfo", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger text-center" role="alert">
+            @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@modelError.ErrorMessage</div>
+            }
+        </div>
+    }
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Email,"البريد الإلكترونى")
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+     </div>
+
+    <div class="mb-3 position-relative">
+        @Html.LabelFor(m => m.Password, "كلمة المرور")
+        <div class="input-group" dir="ltr">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "Password" })
+            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('Password', this)">
+                🔒
+            </button>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">دخول</button>
+    <div class="text-center mt-3">
+        <span> نسيت كلمة المرور</span>
+        <a href="@Url.Action("Resetbyemail", "UserInfo")" class="btn btn-link">  نسيت كلمة المرور</a>
+    </div>
+    <div class="text-center mt-3">
+        <span>ليس لديك حساب؟</span>
+        <a href="@Url.Action("SignUp", "UserInfo")" class="btn btn-link">أنشئ حساب جديد</a>
+    </div>
+}

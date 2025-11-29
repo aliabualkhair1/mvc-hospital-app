@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Employees>
+
+@{
+    ViewData["Title"] = "قائمة الموظفين  ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-primary mb-4">قائمة الموظفين</h2>
+@if (TempData["Success"] != null)
+{
+    <div id="successMessage"
+         class="alert alert-success text-center position-fixed start-50 translate-middle-x"
+         style="top: 20px; z-index: 9999; font-size: 18px; min-width: 300px;">
+        @TempData["Success"]
+    </div>
+}
+
+@if (User.IsInRole("Admin"))
+{
+        <div class="mb-2" style="width: 350px;">
+            <a class="btn btn-success w-100" asp-action="AddEmployee">إضافة موظف جديد</a>
+        </div>
+}
+
+<form method="get" asp-action="ShowEmployees" asp-controller="Employees" class="d-flex flex-column gap-2" style="width: 350px;">
+    <input placeholder="بحث برقم الهاتف" name="searchengine" class="form-control" />
+    <input type="submit" value="بحث" class="btn btn-success" />
+</form>
+
+@if (!Model.Any())
+{
+        <div class="alert alert-light text-center fs-4 fw-bold text-dark mt-4">
+            لا يوجد موظفين حتى الآن
+        </div>
+}
+else
+{
+        <div class="table-responsive mt-4">
+            <table class="table table-hover shadow rounded" style="min-width: 2300px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>المعرف</th>
+                        <th>الاسم</th>
+                        <th>العمر</th>
+                        <th>النوع</th>
+                        <th>رقم الهاتف</th>
+                        <th>طبيعة العمل</th>
+                        <th>الراتب</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var employee in Model)
+                {
+                            <tr>
+                                <td>@employee.Id</td>
+                                <td>@employee.Name</td>
+                                <td>@employee.Age</td>
+                                <td>@employee.Gender</td>
+                                <td>@employee.Phone</td>
+                                <td>@employee.NatureOfWork</td>
+                                <td>@employee.Salary</td>
+                                <td>
+                                    <a asp-action="UpdateEmployee" asp-route-id="@employee.Id" class="btn btn-warning btn-sm me-2">تعديل</a>
+                                    <a asp-action="DeleteEmployee" asp-route-id="@employee.Id" class="btn btn-danger btn-sm">حذف</a>
+                                </td>
+                            </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+}
+@section scripts {
+    <script>
+        setTimeout(function () {
+            var alert = document.getElementById("successMessage");
+            if (alert) {
+                alert.style.transition = "opacity 0.5s ease-out";
+                alert.style.opacity = '0';
+                setTimeout(function () {
+                    alert.remove();
+                }, 500);
+            }
+        }, 3000);
+    </script>
+}
